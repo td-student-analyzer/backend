@@ -3,6 +3,7 @@ import requests
 import json
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
+import os
 
 apiKey = os.environ.get('TD_API_KEY')
 
@@ -138,7 +139,7 @@ def rawDataCall(token = ''):
 def getAllCustomers():
     virtualCustomers = json.loads(rawDataCall())
     i = 0
-    while len(virtualCustomers) > 0 and i < 1:
+    while len(virtualCustomers) > 0 and i < 2:
         for virtualCustomer in virtualCustomers.get('result').get('customers'):
             if 23 < virtualCustomer.get('age') < 30:
                 youngAdultCustomers.append(virtualCustomer)

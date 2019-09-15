@@ -4,9 +4,7 @@ import json
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 
-apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMmYwZDNmZDctMThmMS0zYjdkLWI4ZjEtYm' \
-         'JmNGQxMGNjN2UwIiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI2MzYxNjM4NS01YjViLTRmYWYtOWYyNy0zNGU0MjZhY' \
-         'mJkODcifQ.1I1b3Ic7QfbXWVz0Fo1UVDd2gBTMucRJFbKWhW6DYpE'
+apiKey = os.environ.get('TD_API_KEY')
 
 app = Flask('TdStudentAnalyzer')
 cors = CORS(app)

@@ -2,10 +2,9 @@
 import requests
 import json
 from flask import Flask, request
+import os
 
-apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMmYwZDNmZDctMThmMS0zYjdkLWI4ZjEtYm' \
-         'JmNGQxMGNjN2UwIiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI2MzYxNjM4NS01YjViLTRmYWYtOWYyNy0zNGU0MjZhY' \
-         'mJkODcifQ.1I1b3Ic7QfbXWVz0Fo1UVDd2gBTMucRJFbKWhW6DYpE'
+apiKey = os.environ.get('TD_API_KEY')
 
 app = Flask('TdStudentAnalyzer')
 
@@ -137,7 +136,7 @@ def rawDataCall(token = ''):
 def getAllCustomers():
     virtualCustomers = json.loads(rawDataCall())
     i = 0
-    while len(virtualCustomers) > 0 and i < 1:
+    while len(virtualCustomers) > 0 and i < 2:
         for virtualCustomer in virtualCustomers.get('result').get('customers'):
             if 23 < virtualCustomer.get('age') < 30:
                 youngAdultCustomers.append(virtualCustomer)

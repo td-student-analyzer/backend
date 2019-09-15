@@ -2,12 +2,15 @@
 import requests
 import json
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 
 apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMmYwZDNmZDctMThmMS0zYjdkLWI4ZjEtYm' \
          'JmNGQxMGNjN2UwIiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI2MzYxNjM4NS01YjViLTRmYWYtOWYyNy0zNGU0MjZhY' \
          'mJkODcifQ.1I1b3Ic7QfbXWVz0Fo1UVDd2gBTMucRJFbKWhW6DYpE'
 
 app = Flask('TdStudentAnalyzer')
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 class Customer:
   def __init__(self, total=0, balance=0, balanceRatio=0, education=0, transport=0, bills=0, entertainment=0, food=0,
@@ -180,9 +183,9 @@ def initialiseModel():
     adultAverage.transport = adultAverage.totalTransport / adultAverage.total
     adultAverage.bills = adultAverage.totalBills / adultAverage.total
     adultAverage.balanceRatio = adultAverage.balance / adultAverage.total
-    adultAverage.entertainment = adultAverage.entertainment / adultAverage.total
-    adultAverage.shopping = adultAverage.shopping / adultAverage.total
-    adultAverage.other = adultAverage.other / adultAverage.total
+    adultAverage.entertainment = adultAverage.totalEntertainment / adultAverage.total
+    adultAverage.shopping = adultAverage.totalShopping / adultAverage.total
+    adultAverage.other = adultAverage.totalOther / adultAverage.total
 
     for student in studentCustomers:
         balance = getCustomerAccountsBalance(student.get('id'))
@@ -213,12 +216,13 @@ def initialiseModel():
     studentAverage.transport = studentAverage.totalTransport / studentAverage.total
     studentAverage.balanceRatio = studentAverage.balance / studentAverage.total
     studentAverage.bills = studentAverage.totalBills / studentAverage.total
-    studentAverage.entertainment = studentAverage.entertainment / studentAverage.total
-    studentAverage.shopping = studentAverage.shopping / studentAverage.total
-    studentAverage.other = studentAverage.other / studentAverage.total
+    studentAverage.entertainment = studentAverage.totalEntertainment / studentAverage.total
+    studentAverage.shopping = studentAverage.totalShopping / studentAverage.total
+    studentAverage.other = studentAverage.totalOther / studentAverage.total
 
 
 @app.route('/processCustomer', methods=['POST'])
+@cross_origin()
 def parseCustomer():
     loggedInCustID = request.json.get('custId')
     currentCustomer = Customer()
@@ -258,6 +262,7 @@ def parseCustomer():
 
 
 @app.route('/transactionsByTags', methods=['POST'])
+@cross_origin()
 def transactionsByTags():
     custId = request.json.get('custId')
     tag = request.json.get('tag')

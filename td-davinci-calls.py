@@ -80,11 +80,13 @@ class StudentAverage():
         self.totalShopping = totalShopping
         self.totalOther = totalOther
 
+
 youngAdultCustomers = []
 studentCustomers = []
 
 adultAverage = YoungAdultAverage()
 studentAverage = StudentAverage()
+
 
 def getCustomerAccountsBalance(custId):
     response = requests.get('https://api.td-davinci.com/api/simulants/' + custId + '/simulatedaccounts',
@@ -98,10 +100,12 @@ def getCustomerAccountsBalance(custId):
         balance -= credit.get('balance')
     return balance
 
+
 def getCustomerTransactionsById(custId):
     response  = requests.get('https://api.td-davinci.com/api/customers/'+ custId  +'/transactions',
     headers = { 'Authorization': apiKey })
     return response.text
+
 
 def getTransactionHistory(custId):
     response = requests.post('https://api.td-davinci.com/api/simulants/'+ custId +'/simulatedtransactions/search',
@@ -109,10 +113,12 @@ def getTransactionHistory(custId):
                             json = {'continuationToken': '', 'searchCriteria': [{'key': 'originationDateTime', 'operation': '>', 'value': '2019-09'}]})
     return response.text
 
+
 def getCustomerById(custId):
     response = requests.get('https://api.td-davinci.com/api/customers/'+ custId +'/transactions',
                             headers = {'Authorization': apiKey})
     return response.text
+
 
 def rawDataCall(token = ''):
     print(token)
@@ -120,6 +126,7 @@ def rawDataCall(token = ''):
                              headers={'Authorization': apiKey},
                              json={'continuationToken': token})
     return response.text
+
 
 def getAllCustomers():
     virtualCustomers = json.loads(rawDataCall())
@@ -133,6 +140,7 @@ def getAllCustomers():
 
         virtualCustomers = json.loads(rawDataCall(virtualCustomers.get('result').get('continuationToken')))
         i += 1
+
 
 def initialiseModel():
     getAllCustomers()
@@ -239,7 +247,7 @@ def parseCustomer(loggedInCustID):
 
 def transactionsByTags(custId, tag):
     transactions = json.loads(getTransactionHistory(custId))
-    transactionsToReturn =[]
+    transactionsToReturn = []
 
     for transaction in transactions.get('result'):
         type = transaction.get('categoryTags')[0]

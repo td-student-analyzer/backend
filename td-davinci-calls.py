@@ -1,10 +1,9 @@
 # install the requests package using 'pip3 install requests'
 import requests
 import json
+import os
 
-apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMmYwZDNmZDctMThmMS0zYjdkLWI4ZjEtYm' \
-         'JmNGQxMGNjN2UwIiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI2MzYxNjM4NS01YjViLTRmYWYtOWYyNy0zNGU0MjZhY' \
-         'mJkODcifQ.1I1b3Ic7QfbXWVz0Fo1UVDd2gBTMucRJFbKWhW6DYpE'
+apiKey = os.environ.get('TD_API_KEY')
 
 class Customer:
   def __init__(self, total=0, balance=0, education=0, transport=0, bills=0, entertainment=0, food=0,

@@ -1,9 +1,12 @@
 # install the requests package using 'pip3 install requests'
 import requests
 import json
+from flask import Flask, request
 import os
 
 apiKey = os.environ.get('TD_API_KEY')
+
+app = Flask('TdStudentAnalyzer')
 
 class Customer:
   def __init__(self, total=0, balance=0, education=0, transport=0, bills=0, entertainment=0, food=0,
@@ -130,7 +133,7 @@ def rawDataCall(token = ''):
 def getAllCustomers():
     virtualCustomers = json.loads(rawDataCall())
     i = 0
-    while len(virtualCustomers) > 0 and i < 5:
+    while len(virtualCustomers) > 0 and i < 1:
         for virtualCustomer in virtualCustomers.get('result').get('customers'):
             if 23 < virtualCustomer.get('age') < 30:
                 youngAdultCustomers.append(virtualCustomer)
@@ -209,8 +212,11 @@ def initialiseModel():
     studentAverage.other = studentAverage.other / studentAverage.total
 
 
-def parseCustomer(loggedInCustID):
+@app.route('/processCustomer', methods=['POST'])
+def parseCustomer():
+    loggedInCustID = request.json.get('custId')
     currentCustomer = Customer()
+
     currentCustomer.balance = getCustomerAccountsBalance(loggedInCustID)
     currentCustomer.total = currentCustomer.balance
     transactions = json.loads(getTransactionHistory(loggedInCustID))
@@ -241,10 +247,14 @@ def parseCustomer(loggedInCustID):
     currentCustomer.shopping = currentCustomer.totalShopping / currentCustomer.total
     currentCustomer.other = currentCustomer.totalOther / currentCustomer.total
 
-    return {adultAverage: adultAverage, studentAverage: studentAverage, currentCustomer: currentCustomer}
+    return json.dumps({'adultAverage': adultAverage.__dict__, 'studentAverage': studentAverage.__dict__, 'currentCustomer': currentCustomer.__dict__})
 
 
-def transactionsByTags(custId, tag):
+@app.route('/transactionsByTags', methods=['POST'])
+def transactionsByTags():
+    custId = request.json.get('custId')
+    tag = request.json.get('tag')
+
     transactions = json.loads(getTransactionHistory(custId))
     transactionsToReturn = []
 
@@ -253,7 +263,10 @@ def transactionsByTags(custId, tag):
         if type == tag:
             transactionsToReturn.append(transaction)
 
-    return transactionsToReturn
+    return json.dumps(transactionsToReturn)
 
 
-initialiseModel()
+if __name__ == '__main__':
+    initialiseModel()
+    print('model ready')
+    app.run(host='0.0.0.0', port= 8080)

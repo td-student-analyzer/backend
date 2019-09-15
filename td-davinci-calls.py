@@ -2,17 +2,19 @@
 import requests
 import json
 from flask import Flask, request
-import os
 
-apiKey = os.environ.get('TD_API_KEY')
+apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoiMmYwZDNmZDctMThmMS0zYjdkLWI4ZjEtYm' \
+         'JmNGQxMGNjN2UwIiwiZXhwIjo5MjIzMzcyMDM2ODU0Nzc1LCJhcHBfaWQiOiI2MzYxNjM4NS01YjViLTRmYWYtOWYyNy0zNGU0MjZhY' \
+         'mJkODcifQ.1I1b3Ic7QfbXWVz0Fo1UVDd2gBTMucRJFbKWhW6DYpE'
 
 app = Flask('TdStudentAnalyzer')
 
 class Customer:
-  def __init__(self, total=0, balance=0, education=0, transport=0, bills=0, entertainment=0, food=0,
+  def __init__(self, total=0, balance=0, balanceRatio=0, education=0, transport=0, bills=0, entertainment=0, food=0,
                  shopping=0, other=0, totalEducation=0, totalTransport=0, totalBills=0, totalEntertainment=0,
                  totalFood=0, totalShopping=0, totalOther=0):
     self.balance = balance
+    self.balanceRatio = balanceRatio
     self.total = total
 
     self.education = education
@@ -37,10 +39,11 @@ class RatioAverages:
         self.lowMid = lowMid
 
 class YoungAdultAverage():
-    def __init__(self, total=0, balance=0, education=0, transport=0, bills=0, entertainment=0, food=0,
+    def __init__(self, total=0, balance=0, balanceRatio=0, education=0, transport=0, bills=0, entertainment=0, food=0,
                  shopping=0, other=0, totalEducation=0, totalTransport=0, totalBills=0, totalEntertainment=0,
                  totalFood=0, totalShopping=0, totalOther=0):
         self.balance = balance
+        self.balanceRatio = balanceRatio
         self.total = total
 
         self.education = education
@@ -60,10 +63,11 @@ class YoungAdultAverage():
         self.totalOther = totalOther
 
 class StudentAverage():
-    def __init__(self, total=0, balance=0, education=0, transport=0, bills=0, entertainment=0, food=0,
+    def __init__(self, total=0, balance=0, balanceRatio=0, education=0, transport=0, bills=0, entertainment=0, food=0,
                  shopping=0, other=0, totalEducation=0, totalTransport=0, totalBills=0, totalEntertainment=0,
                  totalFood=0, totalShopping=0, totalOther=0):
         self.balance = balance
+        self.balanceRatio = balanceRatio
         self.total = total
 
         self.education = education
@@ -175,6 +179,7 @@ def initialiseModel():
     adultAverage.education = adultAverage.totalEducation / adultAverage.total
     adultAverage.transport = adultAverage.totalTransport / adultAverage.total
     adultAverage.bills = adultAverage.totalBills / adultAverage.total
+    adultAverage.balanceRatio = adultAverage.balance / adultAverage.total
     adultAverage.entertainment = adultAverage.entertainment / adultAverage.total
     adultAverage.shopping = adultAverage.shopping / adultAverage.total
     adultAverage.other = adultAverage.other / adultAverage.total
@@ -206,6 +211,7 @@ def initialiseModel():
     studentAverage.food = studentAverage.totalFood / studentAverage.total
     studentAverage.education = studentAverage.totalEducation / studentAverage.total
     studentAverage.transport = studentAverage.totalTransport / studentAverage.total
+    studentAverage.balanceRatio = studentAverage.balance / studentAverage.total
     studentAverage.bills = studentAverage.totalBills / studentAverage.total
     studentAverage.entertainment = studentAverage.entertainment / studentAverage.total
     studentAverage.shopping = studentAverage.shopping / studentAverage.total
@@ -243,6 +249,7 @@ def parseCustomer():
     currentCustomer.education = currentCustomer.totalEducation / currentCustomer.total
     currentCustomer.transport = currentCustomer.totalTransport / currentCustomer.total
     currentCustomer.bills = currentCustomer.totalBills / currentCustomer.total
+    currentCustomer.balanceRatio = currentCustomer.balance / currentCustomer.total
     currentCustomer.entertainment = currentCustomer.totalEntertainment / currentCustomer.total
     currentCustomer.shopping = currentCustomer.totalShopping / currentCustomer.total
     currentCustomer.other = currentCustomer.totalOther / currentCustomer.total
